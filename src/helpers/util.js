@@ -24,6 +24,16 @@ export const generatJWT = userInfo => {
   const token = jwt.sign(userInfo, process.env.SECRET, { expiresIn: "1w" });
   return token;
 };
+
+/**
+ *
+ * @param {import ('express').Response} res
+ * @param {number} statusCode
+ * @param {string} message
+ * @param {*} data
+ * @param {number} totalItems
+ * @returns {import('express').Response}
+ */
 export const serverResponse = (
   res,
   statusCode,
