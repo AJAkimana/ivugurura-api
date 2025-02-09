@@ -44,6 +44,11 @@ export const getBookCategories = async (req, res) => {
   return serverResponse(res, 200, "Success", categories);
 };
 
+/**
+ *
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ */
 export const readBook = async (req, res) => {
   const { bookId } = req.params;
   const book = await bookTb.findOne({ id: bookId });
