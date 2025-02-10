@@ -18,6 +18,9 @@ module.exports = {
       url: {
         type: Sequelize.STRING,
       },
+      coverImage: {
+        type: Sequelize.STRING,
+      },
       languageId: {
         type: Sequelize.INTEGER,
         allowNull: false,
