@@ -40,7 +40,8 @@ export const getBooks = async (req, res) => {
  */
 
 export const getBookCategories = async (req, res) => {
-  const categories = await categoryTb.findAll();
+  const { languageId } = req.body;
+  const categories = await categoryTb.findAll({ languageId });
   return serverResponse(res, 200, "Success", categories);
 };
 
