@@ -83,11 +83,12 @@ export const authenticatedUser = async req => {
     const token = headers.authorization;
     try {
       const { id } = verify(token, process.env.SECRET);
-      const user = await dbUser.findOne({ id });
-      if (user.id) {
-        return user;
+      const existingUser = await dbUser.findOne({ id });
+      if (existingUser.id) {
+        return existingUser;
       }
     } catch (error) {
+      console.log(error.message);
       return null;
     }
   } else if (useragent.browser === "PostmanRuntime" && req.isAuthenticated()) {
@@ -162,9 +163,8 @@ export const isFileAllowed = (file, filePath, fileCallBack) => {
 
   if (mimetype && extname) {
     return fileCallBack(null, true);
-  } else {
-    fileCallBack(errorMessage);
   }
+  return fileCallBack(errorMessage);
 };
 const MB = 1024 * 1024;
 export const ACCEPTED_FILE_SIZE = 100 * MB; //100 mbs
