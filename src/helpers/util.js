@@ -39,12 +39,19 @@ export const serverResponse = (
   statusCode,
   message,
   data,
-  totalItems = 0,
+  totalItems = undefined,
 ) => {
   const messageType = statusCode >= 400 ? "error" : "message";
-  return res
-    .status(statusCode)
-    .json({ status: statusCode, [messageType]: message, data, totalItems });
+
+  if (!totalItems && Array.isArray(data)) {
+    totalItems = data.length;
+  }
+  return res.status(statusCode).json({
+    status: statusCode,
+    [messageType]: message,
+    data,
+    totalItems,
+  });
 };
 export const joiValidatorMsg = (res, result) => {
   const errors = [];
