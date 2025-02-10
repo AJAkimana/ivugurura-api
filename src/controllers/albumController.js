@@ -71,8 +71,9 @@ export const uploadFile = async (req, res) => {
     if (error) console.log("Error occurred, not deleted");
 
     upload(req, res, async uploadError => {
-      if (uploadError instanceof multer.MulterError || uploadError)
+      if (uploadError instanceof multer.MulterError || uploadError) {
         return serverResponse(res, 500, uploadError);
+      }
       if (!req.file) return serverResponse(res, 400, "No file selected");
       const fileName = req.file.filename;
       /**

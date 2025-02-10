@@ -16,6 +16,7 @@ export class ChatRoom {
     const userIndex = this.users.findIndex(user => user.id === id);
 
     if (userIndex !== -1) return this.users.splice(userIndex, 1)[0];
+    return null;
   }
   getRoomUsers() {
     return this.users;

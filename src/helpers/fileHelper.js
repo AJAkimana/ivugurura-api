@@ -10,10 +10,11 @@ const dbTopicHelper = new QueryHelper(Topic);
 const storage = multer.diskStorage({
   destination: (req, file, callBack) => {
     let fileStorage = null;
-    const { path } = req;
-    if (path.includes("upload/image")) fileStorage = process.env.IMAGES_ZONE;
-    else if (path.includes("upload/song")) fileStorage = process.env.SONGS_ZONE;
-    else callBack(ConstantHelper.serverError);
+    if (req.path.includes("upload/image")) {
+      fileStorage = process.env.IMAGES_ZONE;
+    } else if (req.path.includes("upload/song")) {
+      fileStorage = process.env.SONGS_ZONE;
+    } else callBack(ConstantHelper.serverError);
     callBack(null, fileStorage);
   },
   filename: (req, file, callBack) => {
@@ -47,7 +48,7 @@ export const uploadSingleFile = async (req, res) => {
   if (prevFile) {
     unlink(`${fileStorage}/${prevFile}`, () => {});
   }
-  const storage = multer.diskStorage({
+  const diskStorage = multer.diskStorage({
     destination: (req, file, callBack) => {
       callBack(null, fileStorage);
     },
@@ -59,7 +60,7 @@ export const uploadSingleFile = async (req, res) => {
     },
   });
   const upload = multer({
-    storage,
+    storage: diskStorage,
     limits: { fileSize: ACCEPTED_FILE_SIZE },
     fileFilter: (req, file, filterCallBack) => {
       isFileAllowed(file, fileStorage, (error, allowed) => {
@@ -69,7 +70,7 @@ export const uploadSingleFile = async (req, res) => {
     },
   }).single("file");
 
-  upload(req, res, async uploadError => {
+  return upload(req, res, async uploadError => {
     if (uploadError instanceof multer.MulterError || uploadError) {
       const errorMsg = uploadError.message || uploadError;
       return serverResponse(res, 500, errorMsg);

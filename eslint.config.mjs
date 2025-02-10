@@ -15,7 +15,6 @@ export default [
   {
     files: ["src/**/*.js"],
     rules: {
-      "no-unused-vars": "error",
       "no-undef": "error",
       "one-var-declaration-per-line": "warn",
       "consistent-return": "error",
@@ -23,6 +22,17 @@ export default [
       curly: ["error", "multi-line"],
       "no-shadow": ["error", { allow: ["req", "res", "err"] }],
       "no-console": "warn",
+      "no-unused-vars": [
+        "error",
+        {
+          vars: "all",
+          args: "after-used",
+          caughtErrors: "all",
+          ignoreRestSiblings: false,
+          reportUsedIgnorePattern: false,
+          argsIgnorePattern: "^_",
+        },
+      ],
     },
   },
 ];

@@ -24,17 +24,34 @@ export const generatJWT = userInfo => {
   const token = jwt.sign(userInfo, process.env.SECRET, { expiresIn: "1w" });
   return token;
 };
+
+/**
+ *
+ * @param {import ('express').Response} res
+ * @param {number} statusCode
+ * @param {string} message
+ * @param {*} data
+ * @param {number} totalItems
+ * @returns {import('express').Response}
+ */
 export const serverResponse = (
   res,
   statusCode,
   message,
   data,
-  totalItems = 0,
+  totalItems = undefined,
 ) => {
   const messageType = statusCode >= 400 ? "error" : "message";
-  return res
-    .status(statusCode)
-    .json({ status: statusCode, [messageType]: message, data, totalItems });
+
+  if (!totalItems && Array.isArray(data)) {
+    totalItems = data.length;
+  }
+  return res.status(statusCode).json({
+    status: statusCode,
+    [messageType]: message,
+    data,
+    totalItems,
+  });
 };
 export const joiValidatorMsg = (res, result) => {
   const errors = [];
@@ -73,11 +90,12 @@ export const authenticatedUser = async req => {
     const token = headers.authorization;
     try {
       const { id } = verify(token, process.env.SECRET);
-      const user = await dbUser.findOne({ id });
-      if (user.id) {
-        return user;
+      const existingUser = await dbUser.findOne({ id });
+      if (existingUser.id) {
+        return existingUser;
       }
     } catch (error) {
+      console.log(error.message);
       return null;
     }
   } else if (useragent.browser === "PostmanRuntime" && req.isAuthenticated()) {
@@ -152,9 +170,8 @@ export const isFileAllowed = (file, filePath, fileCallBack) => {
 
   if (mimetype && extname) {
     return fileCallBack(null, true);
-  } else {
-    fileCallBack(errorMessage);
   }
+  return fileCallBack(errorMessage);
 };
 const MB = 1024 * 1024;
 export const ACCEPTED_FILE_SIZE = 100 * MB; //100 mbs
