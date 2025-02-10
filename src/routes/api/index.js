@@ -7,6 +7,7 @@ import announceRoutes from "./announceRoutes";
 import manageRoutes from "./manageRoutes";
 import { getLang } from "../../helpers";
 import { translate } from "../../locales";
+import bookRoutes from "../../books/routes";
 
 const apiRoutes = Router();
 
@@ -20,5 +21,6 @@ apiRoutes.use("/categories", categoryRoutes);
 apiRoutes.use("/albums", albumRoutes);
 apiRoutes.use("/announcements", announceRoutes);
 apiRoutes.use("/manage", manageRoutes);
+apiRoutes.use("/books", bookRoutes);
 
 export default apiRoutes;
